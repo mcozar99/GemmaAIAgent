@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for happyrobot-bitter-morning-5906 on 2025-10-06T12:57:02-05:00
+# fly.toml app configuration file generated for happyrobot-blue-sunset-4340 on 2025-10-06T17:53:20-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'happyrobot-bitter-morning-5906'
+app = 'happyrobot-blue-sunset-4340'
 primary_region = 'ewr'
 
 [build]
@@ -17,6 +17,4 @@ primary_region = 'ewr'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'
