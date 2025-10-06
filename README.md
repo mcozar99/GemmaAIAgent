@@ -1,6 +1,7 @@
 # Simple Flask Loads API
 
-This small project provides a Flask server with one endpoint to return "loads" from an SQLite database.
+This small project provides a Flask server with one endpoint to return "loads" from a csv.
+Part of an integration with the HappyRobot platform
 
 Files:
 - `app.py` - Flask application exposing GET /loads
