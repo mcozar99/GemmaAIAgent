@@ -212,11 +212,7 @@ DASHBOARD_HTML = '''
             try {
                 showStatus('Loading dashboard data...', 'success');
                 
-                const response = await fetch('/dashboard/data', {
-                    headers: {
-                        'x-api-key': API_KEY
-                    }
-                });
+                const response = await fetch('/dashboard/data');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -243,12 +239,21 @@ DASHBOARD_HTML = '''
         }
         
         function updateMetrics(metrics) {
-            document.getElementById('totalCalls').textContent = metrics.total_calls || 0;
-            document.getElementById('successfulCalls').textContent = metrics.successful_calls || 0;
-            document.getElementById('successRate').textContent = (metrics.success_rate || 0) + '%';
-            document.getElementById('avgDuration').textContent = (metrics.avg_call_duration || 0).toFixed(1) + 's';
-            document.getElementById('avgNegotiations').textContent = (metrics.avg_negotiation_rounds || 0).toFixed(1);
-            document.getElementById('loadsAccepted').textContent = metrics.loads_accepted || 0;
+            function displayMetric(val, suffix = '', fixed = null) {
+                if (val === 'N/A' || val === undefined || val === null || (typeof val === 'number' && isNaN(val))) {
+                    return 'N/A' + suffix;
+                }
+                if (fixed !== null && typeof val === 'number') {
+                    return val.toFixed(fixed) + suffix;
+                }
+                return val + suffix;
+            }
+            document.getElementById('totalCalls').textContent = displayMetric(metrics.total_calls);
+            document.getElementById('successfulCalls').textContent = displayMetric(metrics.successful_calls);
+            document.getElementById('successRate').textContent = displayMetric(metrics.success_rate, '%');
+            document.getElementById('avgDuration').textContent = displayMetric(metrics.avg_call_duration, 's', 1);
+            document.getElementById('avgNegotiations').textContent = displayMetric(metrics.avg_negotiation_rounds, '', 1);
+            document.getElementById('loadsAccepted').textContent = displayMetric(metrics.loads_accepted);
         }
         
         function updateCharts(charts) {
@@ -365,22 +370,37 @@ def get_loads():
 def log_call_metrics():
     """Log call metrics from HappyRobot platform"""
     try:
-        data = request.get_json()
+        # Print raw request data for debugging
+        print("Content-Type:", request.headers.get('Content-Type'))
+        print("Raw Data:", request.get_data(as_text=True))
         
+        if not request.is_json:
+            return jsonify({
+                'status': 'error',
+                'message': 'Content-Type must be application/json'
+            }), 400
+
+        data = request.get_json()
+        if data is None:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid JSON data'
+            }), 400
+
         # Create new row for call metrics
         new_row = {
             'timestamp': datetime.now().isoformat(),
-            'mc_number': data.get('mc_number', ''),
-            'carrier_name': data.get('carrier_name', ''),
-            'call_duration': data.get('call_duration', 0),
-            'load_id': data.get('load_id', ''),
-            'outcome': data.get('outcome', ''),  # successful, failed, transferred, etc.
-            'sentiment': data.get('sentiment', ''),  # positive, neutral, negative
-            'negotiation_rounds': data.get('negotiation_rounds', 0),
-            'initial_rate': data.get('initial_rate', 0),
-            'final_rate': data.get('final_rate', 0),
-            'rate_difference': data.get('rate_difference', 0),
-            'load_accepted': data.get('load_accepted', False)
+            'mc_number': str(data.get('mc_number', '')),  # Convert to string
+            'carrier_name': str(data.get('carrier_name', '')),
+            'call_duration': int(data.get('call_duration', 0)),
+            'load_id': str(data.get('load_id', '')),
+            'outcome': str(data.get('outcome', '')),
+            'sentiment': str(data.get('sentiment', '')),
+            'negotiation_rounds': int(data.get('negotiation_rounds', 0)),
+            'initial_rate': float(data.get('initial_rate', 0)),
+            'final_rate': float(data.get('final_rate', 0)),
+            'rate_difference': float(data.get('rate_difference', 0)),
+            'load_accepted': bool(data.get('load_accepted', False))
         }
         
         # Append to CSV
@@ -427,12 +447,17 @@ def dashboard():
     return render_template_string(DASHBOARD_HTML)
 
 @app.route('/dashboard/data')
-@require_api_key
 def dashboard_data():
     """Generate dashboard data and charts"""
     csv_path = os.path.join(os.path.dirname(__file__), 'call_metrics.csv')
     df = pd.read_csv(csv_path)
     
+    # Helper to handle NaN values
+    def safe_metric(val, is_int=False, precision=2):
+        if pd.isna(val):
+            return 'N/A'
+        return int(val) if is_int else round(val, precision)
+
     if df.empty:
         return jsonify({
             'charts': {},
@@ -445,13 +470,13 @@ def dashboard_data():
                 'loads_accepted': 0
             }
         })
-    
+
     # Calculate key metrics
     total_calls = len(df)
     successful_calls = len(df[df['outcome'] == 'successful'])
     success_rate = (successful_calls / total_calls * 100) if total_calls > 0 else 0
-    avg_call_duration = df['call_duration'].mean() if 'call_duration' in df.columns else 0
-    avg_negotiation_rounds = df['negotiation_rounds'].mean() if 'negotiation_rounds' in df.columns else 0
+    avg_call_duration = df['call_duration'].mean() if 'call_duration' in df.columns else float('nan')
+    avg_negotiation_rounds = df['negotiation_rounds'].mean() if 'negotiation_rounds' in df.columns else float('nan')
     loads_accepted = len(df[df['load_accepted'] == True])
     
     # Create charts
@@ -491,7 +516,8 @@ def dashboard_data():
     }
     
     # 3. Daily Call Volume
-    df['date'] = pd.to_datetime(df['timestamp']).dt.date
+    # Fix timestamp parsing to handle fractional seconds
+    df['date'] = pd.to_datetime(df['timestamp'], errors='coerce', format='%Y-%m-%dT%H:%M:%S.%f').dt.date
     daily_calls = df.groupby('date').size().reset_index(name='calls')
     charts['daily_volume'] = {
         'data': [{
@@ -549,12 +575,12 @@ def dashboard_data():
     return jsonify({
         'charts': charts,
         'metrics': {
-            'total_calls': int(total_calls),
-            'successful_calls': int(successful_calls),
-            'success_rate': round(success_rate, 2),
-            'avg_call_duration': round(avg_call_duration, 2),
-            'avg_negotiation_rounds': round(avg_negotiation_rounds, 2),
-            'loads_accepted': int(loads_accepted)
+            'total_calls': safe_metric(total_calls, is_int=True),
+            'successful_calls': safe_metric(successful_calls, is_int=True),
+            'success_rate': safe_metric(success_rate),
+            'avg_call_duration': safe_metric(avg_call_duration),
+            'avg_negotiation_rounds': safe_metric(avg_negotiation_rounds),
+            'loads_accepted': safe_metric(loads_accepted, is_int=True)
         }
     })
 
