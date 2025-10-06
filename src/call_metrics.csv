@@ -1,0 +1,27 @@
+timestamp,mc_number,carrier_name,call_duration,load_id,outcome,sentiment,negotiation_rounds,initial_rate,final_rate,rate_difference,load_accepted
+2024-10-06T08:15:23,123456,TransLogistics LLC,245,1001,successful,positive,2,2200,2150,-50,True
+2024-10-06T08:45:12,789012,FastHaul Inc,189,1002,successful,neutral,1,1850,1850,0,True
+2024-10-06T09:12:45,345678,MegaTruck Co,412,1003,failed,negative,3,1550,0,-1550,False
+2024-10-06T09:33:21,567890,Swift Carriers,156,1004,transferred,positive,1,2600,2600,0,True
+2024-10-06T10:05:18,234567,Highway Express,298,1005,successful,positive,2,2300,2250,-50,True
+2024-10-06T10:22:34,678901,Mountain Transport,367,1006,failed,negative,4,1600,0,-1600,False
+2024-10-06T10:55:12,890123,Valley Logistics,203,1007,successful,neutral,1,2100,2100,0,True
+2024-10-06T11:18:45,456789,Desert Freight,445,1008,failed,negative,2,1700,0,-1700,False
+2024-10-06T11:42:33,12345,Coast Carriers,167,1009,transferred,positive,0,1400,1400,0,True
+2024-10-06T12:15:21,789456,Prairie Transport,289,1010,successful,positive,1,1250,1275,25,True
+2024-10-06T12:38:14,123789,Urban Freight,334,1011,failed,neutral,2,1300,0,-1300,False
+2024-10-06T13:02:45,456012,Metro Logistics,198,1012,successful,positive,1,1900,1900,0,True
+2024-10-06T13:25:33,678345,City Transport,267,1013,transferred,positive,1,2100,2100,0,True
+2024-10-06T13:48:21,890678,Rural Carriers,389,1014,failed,negative,3,1100,0,-1100,False
+2024-10-06T14:12:12,234901,County Freight,221,1015,successful,neutral,2,1400,1380,-20,True
+2024-10-05T08:20:15,456123,Alpha Transport,312,1016,successful,positive,1,1200,1220,20,True
+2024-10-05T09:45:22,789234,Beta Logistics,278,1017,failed,negative,2,1150,0,-1150,False
+2024-10-05T10:30:18,12567,Gamma Carriers,189,1018,transferred,positive,0,1550,1550,0,True
+2024-10-05T11:15:45,345890,Delta Freight,423,1019,failed,negative,4,950,0,-950,False
+2024-10-05T12:22:33,678123,Epsilon Transport,234,1020,successful,positive,2,1450,1425,-25,True
+2024-10-04T08:30:12,901456,Zeta Logistics,298,1001,successful,neutral,1,2200,2200,0,True
+2024-10-04T09:15:45,234789,Eta Carriers,367,1002,failed,negative,3,1850,0,-1850,False
+2024-10-04T10:45:21,567012,Theta Freight,145,1003,transferred,positive,0,1550,1550,0,True
+2024-10-04T11:30:33,890345,Iota Transport,412,1004,successful,positive,2,2600,2550,-50,True
+2024-10-04T12:15:18,123678,Kappa Logistics,289,1005,failed,neutral,2,2300,0,-2300,False
+2025-10-06T13:00:12.659030,1234,test,120,4584,successful,positive,2,750,725,25,True

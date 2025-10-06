@@ -1,0 +1,11 @@
+load_id,origin,destination,pickup_datetime,delivery_datetime,equipment_type,loadboard_rate,notes,weight,commodity_type,num_of_pieces,miles,dimensions
+L001,"Los Angeles, CA","Las Vegas, NV",2025-10-10 08:00,2025-10-10 14:00,Reefer,1500,Handle with care,12000,Produce,100,270,48x40x96
+L002,"Chicago, IL","Detroit, MI",2025-10-12 09:30,2025-10-12 13:00,Dry Van,800,,8000,Electronics,50,283,48x40x60
+L003,"Houston, TX","Atlanta, GA",2025-10-15 07:00,2025-10-16 18:00,Flatbed,2200,Oversize - permit required,20000,Steel,10,800,240x96x60
+L004,"Seattle, WA","Portland, OR",2025-10-20 10:00,2025-10-20 15:00,Dry Van,600,Short haul,5000,Furniture,8,174,60x48x72
+L005,"Miami, FL","Orlando, FL",2025-10-18 06:00,2025-10-18 11:00,Reefer,400,Temperature controlled,6000,Pharmaceuticals,20,230,48x40x60
+L006,"Newark, NJ","Boston, MA",2025-10-22 12:00,2025-10-22 18:00,Dry Van,950,,10000,Retail Goods,200,220,48x40x72
+L007,"Phoenix, AZ","Denver, CO",2025-10-25 05:30,2025-10-25 18:00,Flatbed,1800,Load with tie-downs,15000,Machinery,3,825,120x80x80
+L008,"San Francisco, CA","Sacramento, CA",2025-10-30 09:00,2025-10-30 12:00,Dry Van,350,,4000,Clothing,500,87,48x40x60
+L009,"Cleveland, OH","Columbus, OH",2025-11-01 07:00,2025-11-01 10:00,Dry Van,275,Local delivery,3000,Parts,120,140,48x40x48
+L010,"Minneapolis, MN","St. Paul, MN",2025-11-03 08:00,2025-11-03 09:30,Dry Van,200,Quick hop,2500,Food,60,15,48x40x48
